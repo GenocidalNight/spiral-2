@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-time Chat</title>
+  <style>
+    /* Basic styling for the chat */
+    #messages {
+      list-style-type: none;
+      margin: 0;
+      padding: 0;
+    }
+    #messages li {
+      padding: 5px 10px;
+    }
+    #messages li:nth-child(odd) {
+      background-color: #f1f1f1;
+    }
+    #message-input {
+      width: 100%;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <ul id="messages"></ul>
+  <input id="message-input" type="text" placeholder="Type your message...">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.min.js"></script>
+  <script>
+    // Establish a connection with the server
+    const socket = io();
+
+    // Handle incoming chat messages
+    socket.on('chat message', (message) => {
+      const li = document.createElement('li');
+      li.textContent = message;
+      document.getElementById('messages').appendChild(li);
+    });
+
+    // Handle sending chat messages
+    document.getElementById('message-input').addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+        const message = event.target.value;
+        socket.emit('chat message', message);
+        event.target.value = '';
+      }
+    });
+  </script>
+</body>
+</html>
